@@ -7,38 +7,19 @@ let ScoreMap =
     let result = lowercaseScore |> List.append uppercaseScore
     Map result
 
-let MapGroup (input: char * seq<char>) =
-    let stringValue = fst input |> string
-    let stringLength = snd input |> Seq.length
-    (stringValue, stringLength)
-
-let TransformGroup (group: seq<char * seq<char>>) =
-    let groupList = Seq.toList group |> List.map MapGroup
-    groupList
-
-let PrintCompartments (bag: string list) =
-    let back = new Dictionary<string, int>()
-    let compartment1 = new Dictionary<string, int>()
-    let compartment2 = new Dictionary<string, int>()
-    let compartmentOneValues = bag[0] |> Seq.toList |> Seq.groupBy (fun x -> x) |> TransformGroup
-    let compartmentTwoValues = bag[1] |> Seq.toList |> Seq.groupBy (fun x -> x) |> TransformGroup
-    0
-
-let ScoreOfChars(charList) =
+let ScoreOfChars(charCollection) =
     let mutable score = 0
-    for characther in charList do
+    for characther in charCollection do
         score <- score + ScoreMap[characther]
     score
 
 let FindSameChars (input: string list): char list =
-    let compartmentOneSet = new HashSet<char>()
-    let compartmentTwoSet = new HashSet<char>()
-    let dublicateList = new HashSet<char>()
-    compartmentOneSet.UnionWith(Seq.toList input[0])
-    compartmentTwoSet.UnionWith(Seq.toList input[1])
+    let compartmentOneSet = Seq.toList input[0] |> Set.ofList
+    let compartmentTwoSet = Seq.toList input[1] |> Set.ofList
+    let dublicateSet = new HashSet<char>()
     for characther in compartmentTwoSet do
-        if compartmentOneSet.Contains characther then dublicateList.Add characther |> ignore
-    Seq.toList dublicateList
+        if compartmentOneSet.Contains characther then dublicateSet.Add characther |> ignore
+    Seq.toList dublicateSet
 
 let CompartmentPart1 (line: string) =
     let compartmentSize = line.Length/2
